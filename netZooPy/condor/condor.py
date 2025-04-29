@@ -409,21 +409,28 @@ class condor_object:
         self.tar_memb.columns = ["tar", "community"]
         self.reg_memb.columns = ["reg", "community"]
 
-    def qscores(self):
+    def qscores(self, c, resolution):
         """
             Computes the qscores (contribution of a vertex to its community modularity)
             for each vertex in the network.
+
+            Parameters
+            ------------
+                c: int             
+                    max number of communities.
+                resolution: float
+                    Resolution parameter for the modularity matrix.
         """
 
-        c = 1 + max(self.reg_memb["com"])
-        B, m, T, R, gn, rg = self.matrices(c)
+        c = 1 + max(self.reg_memb["community"])
+        B, m, T, R, gn, rg = self.matrices(c, resolution)
         self.Qscores = {"reg_qscores": None, "tar_qscores": None}
 
         # Qscores for the targets:
         Rq = B.dot(R) / (2 * m)
         Qj = list()
         for j, r in self.tar_memb.iterrows():
-            Qjh = Rq[j, r["com"]] / self.Qcoms[r["com"]]
+            Qjh = Rq[j, r["community"]] / self.Qcoms[r["community"]]
             Qj.append(Qjh)
         self.Qscores["tar_qscores"] = self.tar_memb.copy()
         self.Qscores["tar_qscores"]["qscore"] = Qj
@@ -432,7 +439,7 @@ class condor_object:
         Tq = T.transpose().dot(B) / (2 * m)
         Qi = list()
         for i, r in self.reg_memb.iterrows():
-            Qih = Tq[r["com"], i] / self.Qcoms[r["com"]]
+            Qih = Tq[r["community"], i] / self.Qcoms[r["community"]]
             Qi.append(Qih)
         self.Qscores["reg_qscores"] = self.reg_memb.copy()
         self.Qscores["reg_qscores"]["qscore"] = Qi
