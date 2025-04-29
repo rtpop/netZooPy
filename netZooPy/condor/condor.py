@@ -161,6 +161,8 @@ class condor_object:
                 Whether to apply the initial community structure on the bipartite network
                 disregarding the bipartite structure or apply it to the unipartite network resulting from the projection onto
                 one of these nodes.
+            resolution: float
+                Resolution parameter for the modularity matrix.
         Outputs:
             self     : updates condor object with
                      tar_memb: DataFrame of initial target node membership.
@@ -268,13 +270,15 @@ class condor_object:
         self.modularity = Q
         return Q
 
-    def matrices(self, c,resolution):
+    def matrices(self, c, resolution):
         """ Computation of modularity matrix and initial community matrix.
 
         Parameters
         ------------
             c        : int
                 max number of communities.
+            resolution: float
+                Resolution parameter for the modularity matrix.
         Returns
         ----------
             B        : array
@@ -348,6 +352,7 @@ class condor_object:
             c        : int
                 max number of communities.
             resolution: float
+                Resolution parameter for modularity.
                 
         
         Notes
@@ -484,8 +489,8 @@ def run_condor(
             Max number of communities. It is recomended to leave this to default, otherwise if the initial community assignement is bigger the program will crash.
         deltaQmin: float
             Difference modularity threshold for stopping the iterative process.
-        resolution: int
-            Not yet implemented.
+        resolution: float
+            Resolution parameter for modularity.
         return_output:  bool
             Whether the function returns the created condor object.
         tar_output: str
