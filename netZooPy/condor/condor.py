@@ -414,7 +414,7 @@ class condor_object:
         self.tar_memb.columns = ["tar", "community"]
         self.reg_memb.columns = ["reg", "community"]
 
-    def qscores(self, c, resolution):
+    def qscores(self, c= "def", resolution=1):
         """
             Computes the qscores (contribution of a vertex to its community modularity)
             for each vertex in the network.
@@ -427,7 +427,9 @@ class condor_object:
                     Resolution parameter for the modularity matrix.
         """
 
-        c = 1 + max(self.reg_memb["community"])
+        if c == "def":
+            c = int(len(self.tar_memb["community"].unique()) * 1.2)
+        
         B, m, T, R, gn, rg = self.matrices(c, resolution)
         self.Qscores = {"reg_qscores": None, "tar_qscores": None}
 
